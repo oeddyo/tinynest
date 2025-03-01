@@ -14,7 +14,16 @@ export default function Page() {
     if (error) {
       Alert.alert(error.message);
     }
-    console.log(data);
+  };
+
+  const onSignInPress = async () => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      Alert.alert(error.message);
+    }
   };
 
   return (
@@ -39,6 +48,7 @@ export default function Page() {
         secureTextEntry={true}
       />
       <Button title="Sign Up" onPress={onSignUpPress} />
+      <Button title="Sign In" onPress={onSignInPress} />
     </View>
   );
 }

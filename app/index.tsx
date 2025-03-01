@@ -7,18 +7,17 @@ export default function Page() {
   const [password, setPassword] = useState("");
 
   const onSignUpPress = async () => {
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
     });
     if (error) {
       Alert.alert(error.message);
     }
-    console.log(data);
   };
 
   const onSignInPress = async () => {
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });

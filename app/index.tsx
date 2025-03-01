@@ -1,9 +1,21 @@
+import { supabase } from "@/utils/supabase";
 import { useState } from "react";
-import { Text, View, Button, TextInput } from "react-native";
+import { Text, View, Button, TextInput, Alert } from "react-native";
 
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const onSignUpPress = async () => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+    if (error) {
+      Alert.alert(error.message);
+    }
+    console.log(data);
+  };
 
   return (
     <View
@@ -14,9 +26,9 @@ export default function Page() {
       }}
     >
       <Text>Sign Up</Text>
-      <TextInput 
-        placeholder="Email" 
-        value={email} 
+      <TextInput
+        placeholder="Email"
+        value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
       />
@@ -26,7 +38,7 @@ export default function Page() {
         onChangeText={setPassword}
         secureTextEntry={true}
       />
-      <Button title="Sign Up" onPress={() => {}} />
+      <Button title="Sign Up" onPress={onSignUpPress} />
     </View>
   );
 }

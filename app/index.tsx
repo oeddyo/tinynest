@@ -2,7 +2,7 @@ import { supabase } from "@/utils/supabase";
 import { useState } from "react";
 import { Text, View, Button, TextInput, Alert } from "react-native";
 
-export default function Page() {
+const AuthPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -51,4 +51,6 @@ export default function Page() {
       <Button title="Sign In" onPress={onSignInPress} />
     </View>
   );
-}
+};
+
+export default AuthPage;

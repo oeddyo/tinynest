@@ -1,6 +1,6 @@
 // app/(auth)/_layout.tsx
 import { AuthContext } from "@/context/auth-context";
-import { Redirect, Stack, Tabs } from "expo-router";
+import { Redirect, Tabs } from "expo-router";
 import { useContext } from "react";
 import { Text } from "react-native";
 

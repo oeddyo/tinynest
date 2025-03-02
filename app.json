@@ -10,7 +10,10 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.tinynest"
+      "bundleIdentifier": "com.tinynestai.tinynest",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to let you select and share photos with your family members."
+      }
     },
     "android": {
       "adaptiveIcon": {

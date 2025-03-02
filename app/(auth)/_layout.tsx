@@ -1,6 +1,6 @@
 // app/(auth)/_layout.tsx
 import { AuthContext } from "@/context/auth-context";
-import { Redirect, Stack } from "expo-router";
+import { Redirect, Stack, Tabs } from "expo-router";
 import { useContext } from "react";
 import { Text } from "react-native";
 
@@ -15,7 +15,12 @@ const AuthLayout = () => {
     return <Redirect href="/login" />;
   }
 
-  return <Stack />;
+  return (
+    <Tabs>
+      <Tabs.Screen name="index" options={{ title: "Home" }} />
+      <Tabs.Screen name="profile" options={{ title: "Profile" }} />
+    </Tabs>
+  );
 };
 
 export default AuthLayout;

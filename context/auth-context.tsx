@@ -21,18 +21,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Initialize user from current session
   useEffect(() => {
     // Get the current session and update state
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      setIsLoading(false);
     });
+
     // Subscribe to auth state changes
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
-        setIsLoading(true);
         setSession(session);
-        setIsLoading(false);
       }
     );
 

@@ -21,7 +21,6 @@ export default function Home() {
 
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
-      allowsEditing: true,
       allowsMultipleSelection: true,
     });
 

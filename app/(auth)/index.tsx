@@ -8,6 +8,10 @@ export default function Home() {
   const { signOut } = useContext(AuthContext);
   const [photos, setPhotos] = useState<string[]>([]);
 
+  const uploadPhotos = async () => {
+    console.log("Uploading photos = ", photos.length);
+  };
+
   const pickImage = async () => {
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -37,6 +41,8 @@ export default function Home() {
       <View>
         <Text>Add Your First Photo</Text>
         <Button title="Add Photo" onPress={pickImage} />
+        <Text>You Have {photos.length} Selected Photos</Text>
+        <Button title="Upload" onPress={uploadPhotos} />
       </View>
     </View>
   );

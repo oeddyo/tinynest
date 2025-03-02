@@ -19,7 +19,7 @@ export default function Home() {
       return;
     }
 
-    const familyId = "xiefamily";
+    const familyId = "ff7a4faf-806a-4573-bc54-ba0543c6126f";
     setIsUploading(true);
 
     try {
@@ -43,11 +43,33 @@ export default function Home() {
         if (uploadError) {
           throw new Error(`Upload error: ${uploadError.message}`);
         }
-        return uploadData;
+
+        const { data: publicUrlData } = supabase.storage
+          .from("photos")
+          .getPublicUrl(filePath);
+
+        const publicUrl = publicUrlData.publicUrl;
+        const { data: photoRecord, error: insertError } = await supabase
+          .from("photos")
+          .insert({
+            family_id: familyId,
+            uploader_id: session.user.id,
+            file_url: publicUrl,
+            caption: photo.caption || null,
+          })
+          .select()
+          .single();
+
+        if (insertError) {
+          throw new Error(`Database error: ${insertError.message}`);
+        }
+
+        return photoRecord;
       });
 
-      await Promise.all(uploadPromises);
+      const uploadedPhotos = await Promise.all(uploadPromises);
       setIsUploading(false);
+      alert(`Successfully uploaded ${uploadedPhotos.length} photos!`);
     } catch (err) {
       console.log(err);
     }

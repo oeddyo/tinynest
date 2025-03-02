@@ -5,11 +5,16 @@ import { View, Text, Button, StyleSheet, Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 
 export default function Home() {
-  const { signOut } = useContext(AuthContext);
+  const { signOut, session } = useContext(AuthContext);
   const [photos, setPhotos] = useState<string[]>([]);
 
   const uploadPhotos = async () => {
-    console.log("Uploading photos = ", photos.length);
+    if (!session?.user.id) {
+      alert("Please sign in to upload photos");
+      return;
+    }
+
+    const familyId = "xiefamily";
   };
 
   const pickImage = async () => {

@@ -6,31 +6,36 @@ import * as ImagePicker from "expo-image-picker";
 
 export default function Home() {
   const { signOut } = useContext(AuthContext);
-  const [photo, setPhoto] = useState<string | null>(null);
+  const [photos, setPhotos] = useState<string[]>([]);
 
   const pickImage = async () => {
-    console.log("Picking image");
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (permissionResult.status !== "granted") {
+      alert(
+        "We need your permission to show the photos library. Please go to settings and grant permission."
+      );
+      return;
+    }
+
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ["images"],
       allowsEditing: true,
-      aspect: [1, 1],
+      allowsMultipleSelection: true,
     });
 
-    console.log(result);
-
     if (!result.canceled) {
-      setPhoto(result.assets[0].uri);
+      setPhotos(result.assets.map((asset) => asset.uri));
+
+      console.log("now selected photos = ", photos.length);
     }
   };
 
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Main page... you can sign out...</Text>
       <Button title="Sign out" onPress={signOut} />
-
       <View>
-        <Text>Selected Photo</Text>
-        {photo && <Image source={{ uri: photo }} style={styles.image} />}
         <Text>Add Your First Photo</Text>
         <Button title="Add Photo" onPress={pickImage} />
       </View>

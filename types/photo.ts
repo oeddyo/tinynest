@@ -1,9 +1,8 @@
 
 
 export interface Photo {
-  id: string;
-  url: string;
-  createdAt: string;
+  uri: string;
+  type: string;
   caption?: string 
 }
 

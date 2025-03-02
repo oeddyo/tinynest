@@ -3,10 +3,11 @@ import { AuthContext } from "@/context/auth-context";
 import React, { useContext, useState } from "react";
 import { View, Text, Button, StyleSheet, Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import { Photo } from "@/types/photo";
 
 export default function Home() {
   const { signOut, session } = useContext(AuthContext);
-  const [photos, setPhotos] = useState<string[]>([]);
+  const [photos, setPhotos] = useState<Photo[]>([]);
 
   const uploadPhotos = async () => {
     if (!session?.user.id) {
@@ -34,9 +35,16 @@ export default function Home() {
     });
 
     if (!result.canceled) {
-      setPhotos(result.assets.map((asset) => asset.uri));
-
-      console.log("Selected photos = ", result.assets.length);
+      const photos: Photo[] = result.assets.map((asset) => {
+        const uriParts = asset.uri.split("/");
+        const name = uriParts[uriParts.length - 1];
+        return {
+          uri: asset.uri,
+          name,
+          type: "image/jpeg",
+        };
+      });
+      setPhotos(photos);
     }
   };
 

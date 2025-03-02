@@ -27,7 +27,7 @@ export default function Home() {
     if (!result.canceled) {
       setPhotos(result.assets.map((asset) => asset.uri));
 
-      console.log("now selected photos = ", photos.length);
+      console.log("Selected photos = ", result.assets.length);
     }
   };
 

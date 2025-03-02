@@ -4,10 +4,14 @@ import React, { useContext, useState } from "react";
 import { View, Text, Button, StyleSheet, Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Photo } from "@/types/photo";
+import * as FileSystem from "expo-file-system";
+import { supabase } from "@/utils/supabase";
+import { decode } from "base64-arraybuffer";
 
 export default function Home() {
   const { signOut, session } = useContext(AuthContext);
   const [photos, setPhotos] = useState<Photo[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
 
   const uploadPhotos = async () => {
     if (!session?.user.id) {
@@ -16,6 +20,37 @@ export default function Home() {
     }
 
     const familyId = "xiefamily";
+    setIsUploading(true);
+
+    try {
+      // upload to storage
+      const uploadPromises = photos.map(async (photo) => {
+        const filePath = photo.name;
+        const fileUri = photo.uri;
+        // Read file as base64
+        const fileBase64 = await FileSystem.readAsStringAsync(fileUri, {
+          encoding: FileSystem.EncodingType.Base64,
+        });
+
+        // uplod to supabase storage
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("photos")
+          .upload(filePath, decode(fileBase64), {
+            contentType: photo.type,
+            upsert: false,
+          });
+
+        if (uploadError) {
+          throw new Error(`Upload error: ${uploadError.message}`);
+        }
+        return uploadData;
+      });
+
+      await Promise.all(uploadPromises);
+      setIsUploading(false);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const pickImage = async () => {
@@ -56,6 +91,7 @@ export default function Home() {
         <Button title="Add Photo" onPress={pickImage} />
         <Text>You Have {photos.length} Selected Photos</Text>
         <Button title="Upload" onPress={uploadPhotos} />
+        <Text>{`Is Uploading: ${isUploading}`}</Text>
       </View>
     </View>
   );

@@ -49,6 +49,7 @@ export default function Home() {
           .getPublicUrl(filePath);
 
         const publicUrl = publicUrlData.publicUrl;
+        console.log("public url = ", publicUrl);
         const { data: photoRecord, error: insertError } = await supabase
           .from("photos")
           .insert({

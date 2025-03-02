@@ -34,8 +34,8 @@ const LoginPage = () => {
       />
       <Button
         title="Sign In"
-        onPress={() => {
-          signIn(email, password);
+        onPress={async() => {
+          await signIn(email, password);
           // redirect
           router.replace("/");
         }}

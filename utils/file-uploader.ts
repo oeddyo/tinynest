@@ -12,6 +12,7 @@ const generateFilePath = (familyId: string, date: Date): string => {
   // Create date folder (YYYY-MM-DD)
   const dateFolder = date.toISOString().split('T')[0];
   // Combine into path with jpg extension (assuming only images)
+  //(TODO: exie) need to add mime type to the file name
   return `${familyId}/${dateFolder}/${uuid}.jpg`;
 };
 

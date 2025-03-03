@@ -3,8 +3,8 @@
  * Corresponds to the media_items table in the database
  */
 export enum MediaType {
-  Photo = 'photo',
-  Video = 'video'
+  Photo = "photo",
+  Video = "video"
 }
 
 export interface MediaItem {

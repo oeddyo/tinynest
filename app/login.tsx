@@ -16,7 +16,7 @@ const LoginPage = () => {
       style={{
         flex: 1,
         justifyContent: "center",
-        alignItems: "center",
+        alignItems: "center"
       }}
     >
       <Text>Sign Up</Text>

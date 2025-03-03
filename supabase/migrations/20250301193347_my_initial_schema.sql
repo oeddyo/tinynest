@@ -18,12 +18,30 @@ CREATE TABLE family_memberships (
   UNIQUE(family_id, user_id)
 );
 
-CREATE TABLE photos (
-  id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
-  family_id uuid NOT NULL REFERENCES families(id) ON DELETE CASCADE,
-  uploader_id uuid NOT NULL REFERENCES auth.users(id),
-  file_url text NOT NULL,  -- URL in Supabase Storage
-  caption text,
-  created_at timestamptz DEFAULT now()
+
+CREATE TYPE media_type_enum AS ENUM ('photo', 'video');
+CREATE TABLE media_items (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  family_id UUID NOT NULL REFERENCES families(id) ON DELETE CASCADE,
+  uploader_id UUID NOT NULL REFERENCES auth.users(id),
+  media_type media_type_enum NOT NULL,
+  storage_path TEXT NOT NULL,
+  file_name TEXT NOT NULL,
+  size_bytes BIGINT NOT NULL,
+  mime_type TEXT NOT NULL,
+  
+  -- Common metadata
+  caption TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  thumbnail_path TEXT
+  
+  -- Media-specific metadata (nullable)
+
+  -- photo fields
+  width INTEGER,
+  height INTEGER,
+
+  -- video fields
+  duration_seconds FLOAT,
 );
 

@@ -20,7 +20,7 @@ export default function Home() {
       return;
     }
 
-    const familyId = "ff7a4faf-806a-4573-bc54-ba0543c6126f";
+    const familyId = "d02f198a-c6ca-4960-a7d3-83cc22d7731c";
     setIsUploading(true);
 
     try {
@@ -57,12 +57,15 @@ export default function Home() {
         const publicUrl = publicUrlData.publicUrl;
         console.log("public url = ", publicUrl);
         const { data: photoRecord, error: insertError } = await supabase
-          .from("photos")
+          .from("media_items")
           .insert({
             family_id: familyId,
             uploader_id: session.user.id,
-            file_url: publicUrl,
-            caption: "",
+            storage_path: filePath,
+            media_type: "photo",
+            file_name: "dummy",
+            size_bytes: 0,
+            mime_type: "dummy",
           })
           .select()
           .single();

@@ -38,7 +38,23 @@ const FeedPage = () => {
         console.log(error);
         throw error;
       }
-      return data || [];
+
+      // Generate signed URLs for each media item
+      const mediaWithUrls = await Promise.all(
+        (data || []).map(async (item) => {
+          // Get a signed URL for the media item
+          const { data: urlData } = await supabase.storage
+            .from("family-media") // Make sure this matches your bucket name
+            .createSignedUrl(item.storage_path, 3600); // 1 hour expiration
+
+          return {
+            ...item,
+            uri: urlData?.signedUrl || "",
+          };
+        })
+      );
+
+      return mediaWithUrls;
     },
   });
 

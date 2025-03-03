@@ -3,7 +3,6 @@ import { AuthContext } from "@/context/auth-context";
 import React, { useContext, useState } from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { Photo } from "@/types/media-item";
 import * as FileSystem from "expo-file-system";
 import { supabase } from "@/utils/supabase";
 import { decode } from "base64-arraybuffer";
@@ -50,12 +49,6 @@ export default function Home() {
           throw new Error(`Upload error: ${uploadError.message}`);
         }
 
-        const { data: publicUrlData } = supabase.storage
-          .from("photos")
-          .getPublicUrl(filePath);
-
-        const publicUrl = publicUrlData.publicUrl;
-        console.log("public url = ", publicUrl);
         const { data: photoRecord, error: insertError } = await supabase
           .from("media_items")
           .insert({

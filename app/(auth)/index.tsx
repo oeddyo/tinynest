@@ -57,6 +57,7 @@ export default function Home() {
             uploader_id: session.user.id,
             storage_path: filePath,
             media_type: "photo",
+            // need to figure out the fields
             file_name: "dummy",
             size_bytes: 0,
             mime_type: "dummy",

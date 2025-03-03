@@ -5,7 +5,7 @@ import {
   Image,
   ActivityIndicator,
   FlatList,
-  RefreshControl,
+  RefreshControl
 } from "react-native";
 import React, { useContext } from "react";
 import { AuthContext } from "@/context/auth-context";
@@ -20,7 +20,7 @@ const FeedPage = () => {
     isLoading,
     isError,
     error,
-    refetch,
+    refetch
   } = useQuery<MediaItem[]>({
     queryKey: ["feedMediaItems", session?.user.id],
     queryFn: async () => {
@@ -49,13 +49,13 @@ const FeedPage = () => {
 
           return {
             ...item,
-            uri: urlData?.signedUrl || "",
+            uri: urlData?.signedUrl || ""
           };
         })
       );
 
       return mediaWithUrls;
-    },
+    }
   });
 
   // Render a media item
@@ -126,21 +126,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#fff",
+    backgroundColor: "#fff"
   },
   centered: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: 20,
+    padding: 20
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 16,
+    marginBottom: 16
   },
   list: {
-    paddingBottom: 20,
+    paddingBottom: 20
   },
   mediaItemContainer: {
     marginBottom: 20,
@@ -151,26 +151,26 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 2,
+    elevation: 2
   },
   mediaItem: {
     width: "100%",
     height: 300,
-    resizeMode: "cover",
+    resizeMode: "cover"
   },
   caption: {
     padding: 12,
-    fontSize: 16,
+    fontSize: 16
   },
   timestamp: {
     padding: 12,
     paddingTop: 0,
     fontSize: 12,
-    color: "#666",
+    color: "#666"
   },
   errorText: {
     color: "red",
     textAlign: "center",
-    marginTop: 10,
-  },
+    marginTop: 10
+  }
 });

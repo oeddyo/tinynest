@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ master, main ]
+    branches: [master, main]
   pull_request:
-    branches: [ master, main ]
+    branches: [master, main]
 
 jobs:
   lint:
@@ -16,25 +16,25 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
-          cache: 'npm'
-      
+          node-version: "18"
+          cache: "npm"
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Run ESLint
         run: npm run lint
         continue-on-error: true
-      
+
       # Only run auto-fix on pull requests
       - name: Run ESLint with fixes
         if: github.event_name == 'pull_request'
         run: npm run lint:fix
-      
+
       # Only commit changes on pull requests
       - name: Commit ESLint fixes
         if: github.event_name == 'pull_request'
@@ -42,20 +42,20 @@ jobs:
         with:
           commit_message: "style: fix linting issues"
           branch: ${{ github.head_ref }}
-  
+
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
-          cache: 'npm'
-      
+          node-version: "18"
+          cache: "npm"
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Run tests
-        run: npm test 
+        run: npm test

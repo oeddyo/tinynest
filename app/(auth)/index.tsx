@@ -3,7 +3,7 @@ import { AuthContext } from "@/context/auth-context";
 import React, { useContext, useState } from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { Photo } from "@/types/photo";
+import { Photo } from "@/types/media-item";
 import * as FileSystem from "expo-file-system";
 import { supabase } from "@/utils/supabase";
 import { decode } from "base64-arraybuffer";
@@ -13,7 +13,7 @@ export default function Home() {
   const [assets, setAssets] = useState<ImagePicker.ImagePickerAsset[]>([]);
   const [isUploading, setIsUploading] = useState(false);
 
-  const uploadPhotos = async () => {
+  const uploadMediaItems = async () => {
     if (!session?.user.id) {
       alert("Please sign in to upload photos");
       return;
@@ -24,19 +24,24 @@ export default function Home() {
 
     try {
       // upload to storage
-      const uploadPromises = photos.map(async (photo) => {
-        const filePath = photo.name;
-        const fileUri = photo.uri;
-        // Read file as base64
-        const fileBase64 = await FileSystem.readAsStringAsync(fileUri, {
-          encoding: FileSystem.EncodingType.Base64,
-        });
+      const uploadPromises = assets.map(async (asset) => {
+        const filePath = asset.fileName;
+        const fileUri = asset.uri;
+
+        // Use asset.base64 if it exists (provided for images when base64: true is enabled)
+        // Otherwise, read the file as base64.
+        let fileBase64 = asset.base64;
+        if (!fileBase64) {
+          fileBase64 = await FileSystem.readAsStringAsync(fileUri, {
+            encoding: FileSystem.EncodingType.Base64,
+          });
+        }
 
         // uplod to supabase storage
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from("photos")
+        const { data, error: uploadError } = await supabase.storage
+          .from("family-media")
           .upload(filePath, decode(fileBase64), {
-            contentType: photo.type,
+            contentType: asset.type,
             upsert: false,
           });
 
@@ -56,7 +61,7 @@ export default function Home() {
             family_id: familyId,
             uploader_id: session.user.id,
             file_url: publicUrl,
-            caption: photo.caption || null,
+            caption: asset.caption || null,
           })
           .select()
           .single();
@@ -104,7 +109,7 @@ export default function Home() {
         <Text>Add Your First Photo</Text>
         <Button title="Add Photo" onPress={pickAssets} />
         <Text>You Have {assets.length} Selected assets</Text>
-        <Button title="Upload" onPress={uploadPhotos} />
+        <Button title="Upload" onPress={uploadMediaItems} />
         <Text>{`Is Uploading: ${isUploading}`}</Text>
       </View>
     </View>

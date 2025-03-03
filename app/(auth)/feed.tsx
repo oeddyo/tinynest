@@ -10,7 +10,7 @@ import {
 import React, { useContext } from "react";
 import { AuthContext } from "@/context/auth-context";
 import { useQuery } from "@tanstack/react-query";
-import { Photo } from "@/types/photo";
+import { Photo } from "@/types/media-item";
 import { supabase } from "@/utils/supabase";
 
 const FeedPage = () => {

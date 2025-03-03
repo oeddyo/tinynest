@@ -28,6 +28,7 @@ export default function Home() {
         const filePath = generateFilePath(familyId, new Date());
         const fileUri = asset.uri;
 
+        // need to figure out how to deal with video
         // Use asset.base64 if it exists (provided for images when base64: true is enabled)
         // Otherwise, read the file as base64.
         let fileBase64 = asset.base64;

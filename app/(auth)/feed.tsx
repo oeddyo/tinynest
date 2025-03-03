@@ -10,8 +10,13 @@ import {
 import React, { useContext } from "react";
 import { AuthContext } from "@/context/auth-context";
 import { useQuery } from "@tanstack/react-query";
-import { MediaItem } from "@/types/media-item";
 import { supabase } from "@/utils/supabase";
+
+interface MediaItem {
+  id: string;
+  uri: string;
+  caption: string | null;
+}
 
 const FeedPage = () => {
   const { session } = useContext(AuthContext);
@@ -21,7 +26,7 @@ const FeedPage = () => {
     isError,
     error,
     refetch
-  } = useQuery<MediaItem[]>({
+  } = useQuery({
     queryKey: ["feedMediaItems", session?.user.id],
     queryFn: async () => {
       if (!session?.user.id) {
@@ -35,7 +40,7 @@ const FeedPage = () => {
         .order("created_at", { ascending: false });
 
       if (error) {
-        console.log(error);
+        console.error(error);
         throw error;
       }
 
@@ -66,10 +71,6 @@ const FeedPage = () => {
           source={{ uri: item.uri }}
           style={styles.mediaItem}
           resizeMode="cover"
-          onLoad={() => console.log("Image loaded:", item)}
-          onError={(error) =>
-            console.log("Image error:", error.nativeEvent.error, item)
-          }
         />
         {item.caption && <Text style={styles.caption}>{item.caption}</Text>}
       </View>

@@ -10,7 +10,7 @@ import {
 import React, { useContext } from "react";
 import { AuthContext } from "@/context/auth-context";
 import { useQuery } from "@tanstack/react-query";
-import { Photo } from "@/types/media-item";
+import { MediaItem } from "@/types/media-item";
 import { supabase } from "@/utils/supabase";
 
 const FeedPage = () => {
@@ -21,7 +21,7 @@ const FeedPage = () => {
     isError,
     error,
     refetch,
-  } = useQuery<Photo[]>({
+  } = useQuery<MediaItem[]>({
     queryKey: ["feedPhotos", session?.user.id],
     queryFn: async () => {
       if (!session?.user.id) {
@@ -29,12 +29,13 @@ const FeedPage = () => {
       }
 
       const { data, error } = await supabase
-        .from("photos")
+        .from("media_items")
         .select("*")
         .eq("uploader_id", session.user.id)
         .order("created_at", { ascending: false });
 
       if (error) {
+        console.log(error);
         throw error;
       }
       return data || [];
@@ -42,17 +43,16 @@ const FeedPage = () => {
   });
 
   // Render a photo item
-  const renderPhotoItem = ({ item }: { item: Photo }) => {
-    console.log("so url = ", item.file_url);
+  const renderMediaItem = ({ item }: { item: MediaItem }) => {
     return (
       <View style={styles.photoContainer}>
         <Image
-          source={{ uri: item.file_url }}
+          source={{ uri: item.uri }}
           style={styles.photo}
           resizeMode="cover"
-          onLoad={() => console.log("Image loaded:", item.file_url)}
+          onLoad={() => console.log("Image loaded:", item)}
           onError={(error) =>
-            console.log("Image error:", error.nativeEvent.error, item.file_url)
+            console.log("Image error:", error.nativeEvent.error, item)
           }
         />
         {item.caption && <Text style={styles.caption}>{item.caption}</Text>}
@@ -93,7 +93,7 @@ const FeedPage = () => {
       <Text style={styles.title}>Your Photos</Text>
       <FlatList
         data={photos}
-        renderItem={renderPhotoItem}
+        renderItem={renderMediaItem}
         keyExtractor={(item) => item.id ?? ""}
         contentContainerStyle={styles.list}
         refreshControl={

@@ -16,13 +16,13 @@ import { supabase } from "@/utils/supabase";
 const FeedPage = () => {
   const { session } = useContext(AuthContext);
   const {
-    data: photos,
+    data: mediaItems,
     isLoading,
     isError,
     error,
     refetch,
   } = useQuery<MediaItem[]>({
-    queryKey: ["feedPhotos", session?.user.id],
+    queryKey: ["feedMediaItems", session?.user.id],
     queryFn: async () => {
       if (!session?.user.id) {
         throw new Error("User not authenticated");
@@ -42,13 +42,13 @@ const FeedPage = () => {
     },
   });
 
-  // Render a photo item
+  // Render a media item
   const renderMediaItem = ({ item }: { item: MediaItem }) => {
     return (
-      <View style={styles.photoContainer}>
+      <View style={styles.mediaItemContainer}>
         <Image
           source={{ uri: item.uri }}
-          style={styles.photo}
+          style={styles.mediaItem}
           resizeMode="cover"
           onLoad={() => console.log("Image loaded:", item)}
           onError={(error) =>
@@ -64,7 +64,7 @@ const FeedPage = () => {
     return (
       <View style={styles.centered}>
         <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Loading photos...</Text>
+        <Text>Loading media...</Text>
       </View>
     );
   }
@@ -73,26 +73,26 @@ const FeedPage = () => {
     return (
       <View style={styles.centered}>
         <Text style={styles.errorText}>
-          Error loading photos:{" "}
+          Error loading media:{" "}
           {error instanceof Error ? error.message : "Unknown error"}
         </Text>
       </View>
     );
   }
 
-  if (!photos || photos.length === 0) {
+  if (!mediaItems || mediaItems.length === 0) {
     return (
       <View style={styles.centered}>
-        <Text>No photos found. Upload some photos to see them here!</Text>
+        <Text>No media-items found. Upload some photos to see them here!</Text>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Your Photos</Text>
+      <Text style={styles.title}>Your media</Text>
       <FlatList
-        data={photos}
+        data={mediaItems}
         renderItem={renderMediaItem}
         keyExtractor={(item) => item.id ?? ""}
         contentContainerStyle={styles.list}
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
   list: {
     paddingBottom: 20,
   },
-  photoContainer: {
+  mediaItemContainer: {
     marginBottom: 20,
     borderRadius: 8,
     overflow: "hidden",
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-  photo: {
+  mediaItem: {
     width: "100%",
     height: 300,
     resizeMode: "cover",

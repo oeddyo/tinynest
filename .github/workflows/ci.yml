@@ -28,20 +28,7 @@ jobs:
 
       - name: Run ESLint
         run: npm run lint
-        continue-on-error: true
-
-      # Only run auto-fix on pull requests
-      - name: Run ESLint with fixes
-        if: github.event_name == 'pull_request'
-        run: npm run lint:fix
-
-      # Only commit changes on pull requests
-      - name: Commit ESLint fixes
-        if: github.event_name == 'pull_request'
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: "style: fix linting issues"
-          branch: ${{ github.head_ref }}
+        continue-on-error: false
 
   test:
     runs-on: ubuntu-latest

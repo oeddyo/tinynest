@@ -3,9 +3,13 @@ module.exports = {
   extends: "expo",
   rules: {
     "comma-dangle": ["error", "never"],
-    // Add any other style rules you want to customize
     semi: ["error", "always"],
-    quotes: ["error", "double"]
+    quotes: ["error", "double"],
+    "no-unused-vars": "warn",
+    "no-console": ["warn", { allow: ["warn", "error"] }],
+    "object-curly-spacing": ["error", "always"],
+    indent: ["error", 2],
+    "max-len": ["warn", { code: 100 }]
   },
   ignorePatterns: ["/dist/*"]
 };

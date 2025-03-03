@@ -10,49 +10,65 @@ import {
 import React, { useContext } from "react";
 import { AuthContext } from "@/context/auth-context";
 import { useQuery } from "@tanstack/react-query";
-import { Photo } from "@/types/photo";
+import { MediaItem } from "@/types/media-item";
 import { supabase } from "@/utils/supabase";
 
 const FeedPage = () => {
   const { session } = useContext(AuthContext);
   const {
-    data: photos,
+    data: mediaItems,
     isLoading,
     isError,
     error,
     refetch,
-  } = useQuery<Photo[]>({
-    queryKey: ["feedPhotos", session?.user.id],
+  } = useQuery<MediaItem[]>({
+    queryKey: ["feedMediaItems", session?.user.id],
     queryFn: async () => {
       if (!session?.user.id) {
         throw new Error("User not authenticated");
       }
 
       const { data, error } = await supabase
-        .from("photos")
+        .from("media_items")
         .select("*")
         .eq("uploader_id", session.user.id)
         .order("created_at", { ascending: false });
 
       if (error) {
+        console.log(error);
         throw error;
       }
-      return data || [];
+
+      // Generate signed URLs for each media item
+      const mediaWithUrls = await Promise.all(
+        (data || []).map(async (item) => {
+          // Get a signed URL for the media item
+          const { data: urlData } = await supabase.storage
+            .from("family-media") // Make sure this matches your bucket name
+            .createSignedUrl(item.storage_path, 3600); // 1 hour expiration
+
+          return {
+            ...item,
+            uri: urlData?.signedUrl || "",
+          };
+        })
+      );
+
+      return mediaWithUrls;
     },
   });
 
-  // Render a photo item
-  const renderPhotoItem = ({ item }: { item: Photo }) => {
-    console.log("so url = ", item.file_url);
+  // Render a media item
+  const renderMediaItem = ({ item }: { item: MediaItem }) => {
     return (
-      <View style={styles.photoContainer}>
+      <View style={styles.mediaItemContainer}>
         <Image
-          source={{ uri: item.file_url }}
-          style={styles.photo}
+          source={{ uri: item.uri }}
+          style={styles.mediaItem}
           resizeMode="cover"
-          onLoad={() => console.log("Image loaded:", item.file_url)}
+          onLoad={() => console.log("Image loaded:", item)}
           onError={(error) =>
-            console.log("Image error:", error.nativeEvent.error, item.file_url)
+            console.log("Image error:", error.nativeEvent.error, item)
           }
         />
         {item.caption && <Text style={styles.caption}>{item.caption}</Text>}
@@ -64,7 +80,7 @@ const FeedPage = () => {
     return (
       <View style={styles.centered}>
         <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Loading photos...</Text>
+        <Text>Loading media...</Text>
       </View>
     );
   }
@@ -73,27 +89,27 @@ const FeedPage = () => {
     return (
       <View style={styles.centered}>
         <Text style={styles.errorText}>
-          Error loading photos:{" "}
+          Error loading media:{" "}
           {error instanceof Error ? error.message : "Unknown error"}
         </Text>
       </View>
     );
   }
 
-  if (!photos || photos.length === 0) {
+  if (!mediaItems || mediaItems.length === 0) {
     return (
       <View style={styles.centered}>
-        <Text>No photos found. Upload some photos to see them here!</Text>
+        <Text>No media-items found. Upload some photos to see them here!</Text>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Your Photos</Text>
+      <Text style={styles.title}>Your media</Text>
       <FlatList
-        data={photos}
-        renderItem={renderPhotoItem}
+        data={mediaItems}
+        renderItem={renderMediaItem}
         keyExtractor={(item) => item.id ?? ""}
         contentContainerStyle={styles.list}
         refreshControl={
@@ -126,7 +142,7 @@ const styles = StyleSheet.create({
   list: {
     paddingBottom: 20,
   },
-  photoContainer: {
+  mediaItemContainer: {
     marginBottom: 20,
     borderRadius: 8,
     overflow: "hidden",
@@ -137,7 +153,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-  photo: {
+  mediaItem: {
     width: "100%",
     height: 300,
     resizeMode: "cover",

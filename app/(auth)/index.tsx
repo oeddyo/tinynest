@@ -44,18 +44,12 @@ export default function Home() {
           throw new Error(`Upload error: ${uploadError.message}`);
         }
 
-        const { data: publicUrlData } = supabase.storage
-          .from("photos")
-          .getPublicUrl(filePath);
-
-        const publicUrl = publicUrlData.publicUrl;
-        console.log("public url = ", publicUrl);
         const { data: photoRecord, error: insertError } = await supabase
           .from("photos")
           .insert({
             family_id: familyId,
             uploader_id: session.user.id,
-            file_url: publicUrl,
+            file_url: filePath,
             caption: photo.caption || null,
           })
           .select()

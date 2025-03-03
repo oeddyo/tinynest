@@ -6,6 +6,6 @@ export interface Photo {
   name: string;
   type: string;
   caption?: string;
-  file_url?: string;
+  file_url: string;
 }
 

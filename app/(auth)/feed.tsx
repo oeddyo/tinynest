@@ -37,7 +37,26 @@ const FeedPage = () => {
       if (error) {
         throw error;
       }
-      return data || [];
+
+      const photosWithSignedUrls = await Promise.all(
+        data.map(async (photo: Photo) => {
+          console.log("before sign url = ", photo.file_url);
+          const { data: signedUrlData, error: signError } =
+            await supabase.storage
+              .from("photos")
+              .createSignedUrl(photo.file_url, 60);
+
+          console.log("signed url = ", signedUrlData);
+          if (signError) {
+            throw signError;
+          }
+          return {
+            ...photo,
+            file_url: signedUrlData.signedUrl,
+          };
+        })
+      );
+      return photosWithSignedUrls || [];
     },
   });
 

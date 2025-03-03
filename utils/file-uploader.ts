@@ -1,20 +1,19 @@
 import "react-native-get-random-values";
-import { v4 as uuidv4 } from "uuid";
+import { nanoid } from "nanoid";
 
 /**
  * Generates a simplified file path for storage
- * @param familyId The family ID for organization
+ * @param familyId The family ID
+ * @param date The date for organizing files (defaults to current date)
  * @returns A unique file path
  */
-const generateFilePath = (familyId: string, date: Date): string => {
-  // Generate UUID for filename
-  const uuid = uuidv4();
-  // Create date folder (YYYY-MM-DD)
-  const dateFolder = date.toISOString().split("T")[0];
-  // Combine into path with jpg extension (assuming only images)
-  //(TODO: exie) need to add mime type to the file name
-  return `${familyId}/${dateFolder}/${uuid}.jpg`;
+export const generateFilePath = (familyId: string, date: Date = new Date()): string => {
+  // Format date as YYYY-MM-DD
+  const formattedDate = date.toISOString().split("T")[0];
+  
+  // Generate a unique ID for the file (shorter than UUID)
+  const uniqueId = nanoid(10); // 10 characters is usually sufficient
+  
+  // Construct the path: familyId/YYYY-MM-DD/uniqueId
+  return `${familyId}/${formattedDate}/${uniqueId}`;
 };
-
-
-export { generateFilePath };

@@ -10,7 +10,7 @@ import {
 import React, { useContext } from "react";
 import { AuthContext } from "@/context/auth-context";
 import { useQuery } from "@tanstack/react-query";
-import { Photo } from "@/types/photo";
+import { Media } from "@/types/photo";
 import { supabase } from "@/utils/supabase";
 
 const FeedPage = () => {
@@ -21,7 +21,7 @@ const FeedPage = () => {
     isError,
     error,
     refetch,
-  } = useQuery<Photo[]>({
+  } = useQuery<Media[]>({
     queryKey: ["feedPhotos", session?.user.id],
     queryFn: async () => {
       if (!session?.user.id) {
@@ -39,15 +39,15 @@ const FeedPage = () => {
       }
 
       const photosWithSignedUrls = await Promise.all(
-        data.map(async (photo: Photo) => {
+        data.map(async (photo: Media) => {
           console.log("before sign url = ", photo.file_url);
           const { data: signedUrlData, error: signError } =
             await supabase.storage
               .from("photos")
               .createSignedUrl(photo.file_url, 60);
 
-          console.log("signed url = ", signedUrlData);
           if (signError) {
+            console.error(signError.message);
             throw signError;
           }
           return {
@@ -61,7 +61,7 @@ const FeedPage = () => {
   });
 
   // Render a photo item
-  const renderPhotoItem = ({ item }: { item: Photo }) => {
+  const renderPhotoItem = ({ item }: { item: Media }) => {
     console.log("so url = ", item.file_url);
     return (
       <View style={styles.photoContainer}>

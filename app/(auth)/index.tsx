@@ -3,14 +3,14 @@ import { AuthContext } from "@/context/auth-context";
 import React, { useContext, useState } from "react";
 import { View, Text, Button, StyleSheet, Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { Photo } from "@/types/photo";
+import { Media } from "@/types/photo";
 import * as FileSystem from "expo-file-system";
 import { supabase } from "@/utils/supabase";
 import { decode } from "base64-arraybuffer";
 
 export default function Home() {
   const { signOut, session } = useContext(AuthContext);
-  const [photos, setPhotos] = useState<Photo[]>([]);
+  const [photos, setPhotos] = useState<Media[]>([]);
   const [isUploading, setIsUploading] = useState(false);
 
   const uploadPhotos = async () => {
@@ -44,12 +44,14 @@ export default function Home() {
           throw new Error(`Upload error: ${uploadError.message}`);
         }
 
+        console.log("Uploaded file path:", uploadData);
+
         const { data: photoRecord, error: insertError } = await supabase
           .from("photos")
           .insert({
             family_id: familyId,
             uploader_id: session.user.id,
-            file_url: filePath,
+            file_url: uploadData.path,
             caption: photo.caption || null,
           })
           .select()
@@ -87,7 +89,7 @@ export default function Home() {
     });
 
     if (!result.canceled) {
-      const photos: Photo[] = result.assets.map((asset) => {
+      const photos: Media[] = result.assets.map((asset) => {
         const uriParts = asset.uri.split("/");
         const name = uriParts[uriParts.length - 1];
         return {

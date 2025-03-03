@@ -7,6 +7,7 @@ import { Photo } from "@/types/media-item";
 import * as FileSystem from "expo-file-system";
 import { supabase } from "@/utils/supabase";
 import { decode } from "base64-arraybuffer";
+import { generateFilePath } from "@/utils/file-uploader";
 
 export default function Home() {
   const { signOut, session } = useContext(AuthContext);
@@ -25,7 +26,7 @@ export default function Home() {
     try {
       // upload to storage
       const uploadPromises = assets.map(async (asset) => {
-        const filePath = asset.fileName;
+        const filePath = generateFilePath(familyId, new Date());
         const fileUri = asset.uri;
 
         // Use asset.base64 if it exists (provided for images when base64: true is enabled)
@@ -38,7 +39,7 @@ export default function Home() {
         }
 
         // uplod to supabase storage
-        const { data, error: uploadError } = await supabase.storage
+        const { error: uploadError } = await supabase.storage
           .from("family-media")
           .upload(filePath, decode(fileBase64), {
             contentType: asset.type,
@@ -61,7 +62,7 @@ export default function Home() {
             family_id: familyId,
             uploader_id: session.user.id,
             file_url: publicUrl,
-            caption: asset.caption || null,
+            caption: "",
           })
           .select()
           .single();

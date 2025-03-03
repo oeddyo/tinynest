@@ -33,7 +33,7 @@ CREATE TABLE media_items (
   -- Common metadata
   caption TEXT,
   created_at TIMESTAMPTZ DEFAULT now(),
-  thumbnail_path TEXT
+  thumbnail_path TEXT,
   
   -- Media-specific metadata (nullable)
 
@@ -42,6 +42,6 @@ CREATE TABLE media_items (
   height INTEGER,
 
   -- video fields
-  duration_seconds FLOAT,
+  duration_seconds FLOAT
 );
 

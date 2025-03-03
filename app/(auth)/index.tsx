@@ -1,7 +1,7 @@
 // app/(auth)/index.tsx
 import { AuthContext } from "@/context/auth-context";
 import React, { useContext, useState } from "react";
-import { View, Text, Button, StyleSheet, Image } from "react-native";
+import { View, Text, Button, StyleSheet } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Photo } from "@/types/photo";
 import * as FileSystem from "expo-file-system";
@@ -10,7 +10,7 @@ import { decode } from "base64-arraybuffer";
 
 export default function Home() {
   const { signOut, session } = useContext(AuthContext);
-  const [photos, setPhotos] = useState<Photo[]>([]);
+  const [assets, setAssets] = useState<ImagePicker.ImagePickerAsset[]>([]);
   const [isUploading, setIsUploading] = useState(false);
 
   const uploadPhotos = async () => {
@@ -88,21 +88,12 @@ export default function Home() {
     }
 
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
+      mediaTypes: ["images", "videos"],
       allowsMultipleSelection: true,
     });
 
     if (!result.canceled) {
-      const photos: Photo[] = result.assets.map((asset) => {
-        const uriParts = asset.uri.split("/");
-        const name = uriParts[uriParts.length - 1];
-        return {
-          uri: asset.uri,
-          name,
-          type: "image/jpeg",
-        };
-      });
-      setPhotos(photos);
+      setAssets(result.assets);
     }
   };
 
@@ -112,7 +103,7 @@ export default function Home() {
       <View>
         <Text>Add Your First Photo</Text>
         <Button title="Add Photo" onPress={pickAssets} />
-        <Text>You Have {photos.length} Selected Photos</Text>
+        <Text>You Have {assets.length} Selected assets</Text>
         <Button title="Upload" onPress={uploadPhotos} />
         <Text>{`Is Uploading: ${isUploading}`}</Text>
       </View>

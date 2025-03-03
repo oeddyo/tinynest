@@ -76,7 +76,7 @@ export default function Home() {
     }
   };
 
-  const pickImage = async () => {
+  const pickAssets = async () => {
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -111,7 +111,7 @@ export default function Home() {
       <Button title="Sign out" onPress={signOut} />
       <View>
         <Text>Add Your First Photo</Text>
-        <Button title="Add Photo" onPress={pickImage} />
+        <Button title="Add Photo" onPress={pickAssets} />
         <Text>You Have {photos.length} Selected Photos</Text>
         <Button title="Upload" onPress={uploadPhotos} />
         <Text>{`Is Uploading: ${isUploading}`}</Text>

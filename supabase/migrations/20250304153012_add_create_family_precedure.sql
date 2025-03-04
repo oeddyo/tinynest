@@ -2,18 +2,14 @@ CREATE OR REPLACE FUNCTION create_family_with_admin(
   p_name TEXT,
   p_user_id UUID
 )
-RETURNS TABLE (
-  id UUID,
-  name TEXT,
-  created_at TIMESTAMPTZ
-) AS $$
+RETURNS families AS $$
 DECLARE
-  v_family RECORD;
+  v_family families%ROWTYPE;
 BEGIN
   -- Insert the family and get its details
   INSERT INTO families (name)
   VALUES (p_name)
-  RETURNING id, name, created_at INTO v_family;
+  RETURNING * INTO v_family;
 
   -- Create the admin membership
   INSERT INTO family_memberships (
@@ -30,7 +26,6 @@ BEGIN
     true
   );
 
-  -- Return the created family
-  RETURN NEXT v_family;
+  RETURN v_family;
 END;
 $$ LANGUAGE plpgsql;

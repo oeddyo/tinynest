@@ -54,4 +54,4 @@ const createFamily = async (
   return data
 }
 
-export { getFamilyMembers, getFamiliesForUser }
+export { getFamilyMembers, getFamiliesForUser, createFamily }

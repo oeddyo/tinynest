@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AuthContext } from "@/context/auth-context";
 import { getFamiliesForUser, getFamilyMembers } from "@/api/api";
 
-const FamilyPage = () => {
+const FamilyListPage = () => {
   const { session } = useContext(AuthContext);
   const { data } = useQuery({
     queryKey: ["families", session?.user.id],
@@ -21,6 +21,6 @@ const FamilyPage = () => {
   );
 };
 
-export default FamilyPage;
+export default FamilyListPage;
 
 const styles = StyleSheet.create({});

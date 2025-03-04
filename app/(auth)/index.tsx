@@ -86,7 +86,7 @@ export default function Home() {
 
     if (permissionResult.status !== "granted") {
       alert(
-        "We need your permission to show the photos library. Please go to settings and grant permission."
+        "We need your permission to show the photos. Please go to settings and grant permission."
       );
       return;
     }

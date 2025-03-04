@@ -9,6 +9,7 @@ import {
   FlatList,
   RefreshControl,
 } from "react-native"
+import { FlashList } from "@shopify/flash-list"
 
 import { AuthContext } from "@/context/auth-context"
 import { supabase } from "@/utils/supabase"
@@ -109,9 +110,10 @@ const FeedPage = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Your media</Text>
-      <FlatList
+      <FlashList
         data={mediaItems}
         renderItem={renderMediaItem}
+        estimatedItemSize={300}
         keyExtractor={(item) => item.id ?? ""}
         contentContainerStyle={styles.list}
         refreshControl={

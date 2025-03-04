@@ -8,12 +8,12 @@ RETURNS TABLE (
   created_at TIMESTAMPTZ
 ) AS $$
 DECLARE
-  v_family_id UUID;
+  v_family RECORD;
 BEGIN
-  -- Insert the family and get its ID
+  -- Insert the family and get its details
   INSERT INTO families (name)
   VALUES (p_name)
-  RETURNING id INTO v_family_id;
+  RETURNING id, name, created_at INTO v_family;
 
   -- Create the admin membership
   INSERT INTO family_memberships (
@@ -23,7 +23,7 @@ BEGIN
     can_upload,
     can_view
   ) VALUES (
-    v_family_id,
+    v_family.id,
     p_user_id,
     'admin',
     true,
@@ -31,9 +31,6 @@ BEGIN
   );
 
   -- Return the created family
-  RETURN QUERY
-  SELECT f.id, f.name, f.created_at
-  FROM families f
-  WHERE f.id = v_family_id;
+  RETURN NEXT v_family;
 END;
 $$ LANGUAGE plpgsql;

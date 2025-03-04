@@ -1,9 +1,9 @@
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { Link } from "expo-router"
-import React, { useContext } from "react"
-import { Button, StyleSheet, Text, View } from "react-native"
+import React, { useContext, useState } from "react"
+import { Button, StyleSheet, Text, TextInput, View } from "react-native"
 
-import { getFamiliesForUser, getFamilyMembers } from "@/api/api"
+import { createFamily, getFamiliesForUser, getFamilyMembers } from "@/api/api"
 import { AuthContext } from "@/context/auth-context"
 
 const FamilyListPage = () => {
@@ -13,8 +13,11 @@ const FamilyListPage = () => {
     queryFn: () => getFamiliesForUser(session?.user.id as string),
   })
 
-  const { mutate: createFamily } = useMutation({
-    mutationFn: () => createFamily(session?.user.id as string),
+  const [familyName, setFamilyName] = useState("")
+
+  const { mutate } = useMutation({
+    mutationFn: (name: string) =>
+      createFamily(name, session?.user.id as string),
   })
 
   return (
@@ -28,7 +31,12 @@ const FamilyListPage = () => {
         )
       })}
 
-      <Button title="Create Family" onPress={() => {}} />
+      <TextInput
+        value={familyName}
+        onChangeText={setFamilyName}
+        placeholder="Family Name"
+      />
+      <Button title="Create Family" onPress={() => mutate(familyName)} />
     </View>
   )
 }

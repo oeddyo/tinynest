@@ -1,7 +1,8 @@
-import { supabase } from "@/utils/supabase";
 import { Session } from "@supabase/supabase-js";
 import { createContext, useEffect, useState } from "react";
 import { Alert } from "react-native";
+
+import { supabase } from "@/utils/supabase";
 
 type AuthContextType = {
   session: Session | null;
@@ -14,7 +15,7 @@ export const AuthContext = createContext<AuthContextType>({
   session: null,
   signIn: async () => {},
   signOut: async () => {},
-  isLoading: false
+  isLoading: false,
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -45,7 +46,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setIsLoading(true);
     const { error } = await supabase.auth.signInWithPassword({
       email,
-      password
+      password,
     });
     setIsLoading(false);
     if (error) Alert.alert(error.message);

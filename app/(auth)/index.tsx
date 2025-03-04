@@ -1,12 +1,13 @@
 // app/(auth)/index.tsx
-import { AuthContext } from "@/context/auth-context";
+import { decode } from "base64-arraybuffer";
+import * as FileSystem from "expo-file-system";
+import * as ImagePicker from "expo-image-picker";
 import React, { useContext, useState } from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
-import { supabase } from "@/utils/supabase";
-import { decode } from "base64-arraybuffer";
+
+import { AuthContext } from "@/context/auth-context";
 import { generateFilePath } from "@/utils/file-uploader";
+import { supabase } from "@/utils/supabase";
 
 export default function Home() {
   const { signOut, session } = useContext(AuthContext);
@@ -34,7 +35,7 @@ export default function Home() {
         let fileBase64 = asset.base64;
         if (!fileBase64) {
           fileBase64 = await FileSystem.readAsStringAsync(fileUri, {
-            encoding: FileSystem.EncodingType.Base64
+            encoding: FileSystem.EncodingType.Base64,
           });
         }
 
@@ -43,7 +44,7 @@ export default function Home() {
           .from("family-media")
           .upload(filePath, decode(fileBase64), {
             contentType: asset.type,
-            upsert: false
+            upsert: false,
           });
 
         if (uploadError) {
@@ -60,7 +61,7 @@ export default function Home() {
             // need to figure out the fields
             file_name: "dummy",
             size_bytes: 0,
-            mime_type: "dummy"
+            mime_type: "dummy",
           })
           .select()
           .single();
@@ -91,9 +92,9 @@ export default function Home() {
       return;
     }
 
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images", "videos"],
-      allowsMultipleSelection: true
+      allowsMultipleSelection: true,
     });
 
     if (!result.canceled) {
@@ -118,6 +119,6 @@ export default function Home() {
 const styles = StyleSheet.create({
   image: {
     width: 100,
-    height: 100
-  }
+    height: 100,
+  },
 });

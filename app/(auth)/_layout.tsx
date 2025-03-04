@@ -1,8 +1,9 @@
 // app/(auth)/_layout.tsx
-import { AuthContext } from "@/context/auth-context";
 import { Redirect, Tabs } from "expo-router";
 import { useContext } from "react";
 import { Text } from "react-native";
+
+import { AuthContext } from "@/context/auth-context";
 
 const AuthLayout = () => {
   const { session, isLoading } = useContext(AuthContext);

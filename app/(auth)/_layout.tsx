@@ -1,5 +1,5 @@
 // app/(auth)/_layout.tsx
-import { Redirect, Tabs } from "expo-router"
+import { Redirect, Stack, Tabs } from "expo-router"
 import { useContext } from "react"
 import { Text } from "react-native"
 
@@ -17,12 +17,17 @@ const AuthLayout = () => {
   }
 
   return (
-    <Tabs>
-      <Tabs.Screen name="feed" options={{ title: "Feed" }} />
-      <Tabs.Screen name="index" options={{ title: "Add Photo" }} />
-      <Tabs.Screen name="profile" options={{ title: "Profile" }} />
-      <Tabs.Screen name="family" options={{ title: "Family" }} />
-    </Tabs>
+    <Stack>
+      <Stack.Screen name="index" options={{ title: "Family" }} />
+      <Stack.Screen
+        name="family/[id]"
+        options={{
+          gestureEnabled: false, // Disable swipe back gesture
+          headerBackVisible: false, // Hide back button
+          headerShown: false,
+        }}
+      />
+    </Stack>
   )
 }
 

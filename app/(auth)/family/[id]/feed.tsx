@@ -8,8 +8,16 @@ import {
   ActivityIndicator,
   FlatList,
   RefreshControl,
+  Pressable,
 } from "react-native"
 import { FlashList } from "@shopify/flash-list"
+import {
+  GestureHandlerRootView,
+  FlingGestureHandler,
+  Directions,
+  State,
+} from "react-native-gesture-handler"
+import Modal from "react-native-modal"
 
 import { AuthContext } from "@/context/auth-context"
 import { supabase } from "@/utils/supabase"
@@ -20,8 +28,89 @@ interface MediaItem {
   caption: string | null
 }
 
+const PhotoDetail = ({
+  item,
+  isVisible,
+  onClose,
+  onNext,
+  onPrevious,
+  hasNext,
+  hasPrevious,
+}: {
+  item: MediaItem | null
+  isVisible: boolean
+  onClose: () => void
+  onNext: () => void
+  onPrevious: () => void
+  hasNext: boolean
+  hasPrevious: boolean
+}) => {
+  if (!item) return null
+
+  return (
+    <Modal
+      isVisible={isVisible}
+      onBackdropPress={onClose}
+      style={{ margin: 0 }}
+    >
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <FlingGestureHandler
+          direction={Directions.LEFT}
+          onHandlerStateChange={({ nativeEvent }) => {
+            if (nativeEvent.state === State.END && hasNext) {
+              onNext()
+            }
+          }}
+        >
+          <FlingGestureHandler
+            direction={Directions.RIGHT}
+            onHandlerStateChange={({ nativeEvent }) => {
+              if (nativeEvent.state === State.END && hasPrevious) {
+                onPrevious()
+              }
+            }}
+          >
+            <View style={styles.photoDetailContainer}>
+              <Image
+                source={{ uri: item.uri }}
+                style={styles.photoDetailImage}
+                resizeMode="contain"
+              />
+              {item.caption && (
+                <Text style={styles.photoDetailCaption}>{item.caption}</Text>
+              )}
+            </View>
+          </FlingGestureHandler>
+        </FlingGestureHandler>
+      </GestureHandlerRootView>
+    </Modal>
+  )
+}
+
+const MediaItemComponent = ({
+  item,
+  onPress,
+}: {
+  item: MediaItem
+  onPress: () => void
+}) => {
+  return (
+    <Pressable onPress={onPress} style={styles.mediaItemContainer}>
+      <Image
+        source={{ uri: item.uri }}
+        style={styles.mediaItem}
+        resizeMode="cover"
+      />
+      {item.caption && <Text style={styles.caption}>{item.caption}</Text>}
+    </Pressable>
+  )
+}
+
 const FeedPage = () => {
   const { session } = useContext(AuthContext)
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = React.useState<
+    number | null
+  >(null)
   const {
     data: mediaItems,
     isLoading,
@@ -65,18 +154,35 @@ const FeedPage = () => {
     },
   })
 
-  // Render a media item
-  const renderMediaItem = ({ item }: { item: MediaItem }) => {
+  const renderMediaItem = ({
+    item,
+    index,
+  }: {
+    item: MediaItem
+    index: number
+  }) => {
     return (
-      <View style={styles.mediaItemContainer}>
-        <Image
-          source={{ uri: item.uri }}
-          style={styles.mediaItem}
-          resizeMode="cover"
-        />
-        {item.caption && <Text style={styles.caption}>{item.caption}</Text>}
-      </View>
+      <MediaItemComponent
+        item={item}
+        onPress={() => setSelectedPhotoIndex(index)}
+      />
     )
+  }
+
+  const handleNext = () => {
+    if (
+      selectedPhotoIndex !== null &&
+      mediaItems &&
+      selectedPhotoIndex < mediaItems.length - 1
+    ) {
+      setSelectedPhotoIndex(selectedPhotoIndex + 1)
+    }
+  }
+
+  const handlePrevious = () => {
+    if (selectedPhotoIndex !== null && selectedPhotoIndex > 0) {
+      setSelectedPhotoIndex(selectedPhotoIndex - 1)
+    }
   }
 
   if (isLoading) {
@@ -113,11 +219,31 @@ const FeedPage = () => {
       <FlashList
         data={mediaItems}
         renderItem={renderMediaItem}
-        estimatedItemSize={300}
+        estimatedItemSize={150}
+        numColumns={3}
         keyExtractor={(item) => item.id ?? ""}
         contentContainerStyle={styles.list}
         refreshControl={
           <RefreshControl refreshing={isLoading} onRefresh={refetch} />
+        }
+      />
+      <PhotoDetail
+        item={
+          selectedPhotoIndex !== null && mediaItems
+            ? mediaItems[selectedPhotoIndex]
+            : null
+        }
+        isVisible={selectedPhotoIndex !== null}
+        onClose={() => setSelectedPhotoIndex(null)}
+        onNext={handleNext}
+        onPrevious={handlePrevious}
+        hasNext={
+          selectedPhotoIndex !== null && mediaItems
+            ? selectedPhotoIndex < mediaItems.length - 1
+            : false
+        }
+        hasPrevious={
+          selectedPhotoIndex !== null ? selectedPhotoIndex > 0 : false
         }
       />
     </View>
@@ -147,19 +273,16 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   mediaItemContainer: {
-    marginBottom: 20,
+    flex: 1,
+    margin: 2,
     borderRadius: 8,
     overflow: "hidden",
     backgroundColor: "#f9f9f9",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    aspectRatio: 1,
   },
   mediaItem: {
     width: "100%",
-    height: 300,
+    height: "100%",
     resizeMode: "cover",
   },
   caption: {
@@ -176,5 +299,27 @@ const styles = StyleSheet.create({
     color: "red",
     textAlign: "center",
     marginTop: 10,
+  },
+  photoDetailContainer: {
+    flex: 1,
+    backgroundColor: "black",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  photoDetailImage: {
+    width: "100%",
+    height: "100%",
+  },
+  photoDetailCaption: {
+    position: "absolute",
+    bottom: 20,
+    left: 20,
+    right: 20,
+    color: "white",
+    fontSize: 16,
+    textAlign: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    padding: 10,
+    borderRadius: 8,
   },
 })

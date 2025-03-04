@@ -18,7 +18,7 @@ const AuthLayout = () => {
 
   return (
     <Stack>
-      <Stack.Screen name="family-list" options={{ title: "Family" }} />
+      <Stack.Screen name="index" options={{ title: "Family" }} />
       <Stack.Screen
         name="family/[id]"
         options={{

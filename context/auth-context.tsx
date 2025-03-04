@@ -1,5 +1,5 @@
 import { Session } from "@supabase/supabase-js"
-import { createContext, useEffect, useState } from "react"
+import { createContext, useEffect, useState, useContext } from "react"
 import { Alert } from "react-native"
 
 import { supabase } from "@/utils/supabase"
@@ -63,3 +63,5 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     </AuthContext.Provider>
   )
 }
+
+export const useAuth = () => useContext(AuthContext)

@@ -13,7 +13,7 @@ const AuthLayout = () => {
   }
 
   if (!session) {
-    return <Redirect href="/login" />
+    return <Redirect href="/welcome" />
   }
 
   return (

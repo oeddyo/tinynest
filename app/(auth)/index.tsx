@@ -18,6 +18,13 @@ const FamilyListPage = () => {
   const { mutate } = useMutation({
     mutationFn: (name: string) =>
       createFamily(name, session?.user.id as string),
+    onSuccess: () => {
+      alert(`Successfully created family: ${familyName}`)
+      setFamilyName("") // Clear the input after success
+    },
+    onError: (error) => {
+      alert(`Failed to create family: ${error.message}`)
+    },
   })
 
   return (

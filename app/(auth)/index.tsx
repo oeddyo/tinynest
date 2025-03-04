@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { Link } from "expo-router"
 import React, { useContext } from "react"
-import { StyleSheet, Text, View } from "react-native"
+import { Button, StyleSheet, Text, View } from "react-native"
 
 import { getFamiliesForUser, getFamilyMembers } from "@/api/api"
 import { AuthContext } from "@/context/auth-context"
@@ -11,6 +11,10 @@ const FamilyListPage = () => {
   const { data } = useQuery({
     queryKey: ["families", session?.user.id],
     queryFn: () => getFamiliesForUser(session?.user.id as string),
+  })
+
+  const { mutate: createFamily } = useMutation({
+    mutationFn: () => createFamily(session?.user.id as string),
   })
 
   return (
@@ -23,6 +27,8 @@ const FamilyListPage = () => {
           </Link>
         )
       })}
+
+      <Button title="Create Family" onPress={() => {}} />
     </View>
   )
 }

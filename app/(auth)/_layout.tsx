@@ -21,6 +21,7 @@ const AuthLayout = () => {
       <Tabs.Screen name="feed" options={{ title: "Feed" }} />
       <Tabs.Screen name="index" options={{ title: "Add Photo" }} />
       <Tabs.Screen name="profile" options={{ title: "Profile" }} />
+      <Tabs.Screen name="family" options={{ title: "Family" }} />
     </Tabs>
   )
 }

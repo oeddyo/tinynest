@@ -1,16 +1,16 @@
-import { Database } from "@/types/database.types";
-import { supabase } from "@/utils/supabase";
+import { Database } from "@/types/database.types"
+import { supabase } from "@/utils/supabase"
 
 const getFamilyMembers = async (): Promise<
   Database["public"]["Tables"]["family_memberships"]["Row"][]
 > => {
-  const { data, error } = await supabase.from("family_memberships").select("*");
+  const { data, error } = await supabase.from("family_memberships").select("*")
 
   if (error) {
-    throw error;
+    throw error
   }
-  return data;
-};
+  return data
+}
 
 const getFamiliesForUser = async (
   userId: string
@@ -30,13 +30,13 @@ const getFamiliesForUser = async (
     )
   `
     )
-    .eq("user_id", userId);
+    .eq("user_id", userId)
 
   if (error) {
-    throw error;
+    throw error
   }
   // Extract just the families from the results
-  return data?.map((membership) => membership.families) || [];
-};
+  return data?.map((membership) => membership.families) || []
+}
 
-export { getFamilyMembers, getFamiliesForUser };
+export { getFamilyMembers, getFamiliesForUser }

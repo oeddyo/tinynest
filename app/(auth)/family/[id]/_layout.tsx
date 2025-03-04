@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
-import { Tabs } from "expo-router";
+import { Tabs } from "expo-router"
+import React from "react"
+import { StyleSheet, Text, View } from "react-native"
 
 const Layout = () => {
   return (
@@ -8,9 +8,9 @@ const Layout = () => {
       <Tabs.Screen name="index" options={{ title: "Upload" }} />
       <Tabs.Screen name="feed" options={{ title: "Feed" }} />
     </Tabs>
-  );
-};
+  )
+}
 
-export default Layout;
+export default Layout
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({})

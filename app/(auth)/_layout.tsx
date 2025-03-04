@@ -1,19 +1,19 @@
 // app/(auth)/_layout.tsx
-import { Redirect, Stack, Tabs } from "expo-router";
-import { useContext } from "react";
-import { Text } from "react-native";
+import { Redirect, Stack, Tabs } from "expo-router"
+import { useContext } from "react"
+import { Text } from "react-native"
 
-import { AuthContext } from "@/context/auth-context";
+import { AuthContext } from "@/context/auth-context"
 
 const AuthLayout = () => {
-  const { session, isLoading } = useContext(AuthContext);
+  const { session, isLoading } = useContext(AuthContext)
 
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return <Text>Loading...</Text>
   }
 
   if (!session) {
-    return <Redirect href="/login" />;
+    return <Redirect href="/login" />
   }
 
   return (
@@ -28,7 +28,7 @@ const AuthLayout = () => {
         }}
       />
     </Stack>
-  );
-};
+  )
+}
 
-export default AuthLayout;
+export default AuthLayout

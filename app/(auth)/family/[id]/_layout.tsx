@@ -7,6 +7,7 @@ const Layout = () => {
     <Tabs>
       <Tabs.Screen name="index" options={{ title: "Upload" }} />
       <Tabs.Screen name="feed" options={{ title: "Feed" }} />
+      <Tabs.Screen name="setting" options={{ title: "Setting" }} />
     </Tabs>
   )
 }

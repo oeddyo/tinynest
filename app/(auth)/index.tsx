@@ -1,9 +1,9 @@
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { Link } from "expo-router"
-import React, { useContext } from "react"
-import { StyleSheet, Text, View } from "react-native"
+import React, { useContext, useState } from "react"
+import { Button, StyleSheet, Text, TextInput, View } from "react-native"
 
-import { getFamiliesForUser, getFamilyMembers } from "@/api/api"
+import { createFamily, getFamiliesForUser, getFamilyMembers } from "@/api/api"
 import { AuthContext } from "@/context/auth-context"
 
 const FamilyListPage = () => {
@@ -11,6 +11,20 @@ const FamilyListPage = () => {
   const { data } = useQuery({
     queryKey: ["families", session?.user.id],
     queryFn: () => getFamiliesForUser(session?.user.id as string),
+  })
+
+  const [familyName, setFamilyName] = useState("")
+
+  const { mutate } = useMutation({
+    mutationFn: (name: string) =>
+      createFamily(name, session?.user.id as string),
+    onSuccess: () => {
+      alert(`Successfully created family: ${familyName}`)
+      setFamilyName("") // Clear the input after success
+    },
+    onError: (error) => {
+      alert(`Failed to create family: ${error.message}`)
+    },
   })
 
   return (
@@ -23,6 +37,13 @@ const FamilyListPage = () => {
           </Link>
         )
       })}
+
+      <TextInput
+        value={familyName}
+        onChangeText={setFamilyName}
+        placeholder="Family Name"
+      />
+      <Button title="Create Family" onPress={() => mutate(familyName)} />
     </View>
   )
 }

@@ -129,7 +129,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      create_family_with_admin: {
+        Args: {
+          p_name: string
+          p_user_id: string
+        }
+        Returns: {
+          created_at: string | null
+          id: string
+          name: string
+        }
+      }
     }
     Enums: {
       family_member_role_enum: "admin" | "member" | "viewer"

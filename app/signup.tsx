@@ -1,16 +1,26 @@
-// app/index.tsx
 import { router } from "expo-router"
-import { useContext, useState } from "react"
+import { useState } from "react"
 import { Text, View, Button, TextInput } from "react-native"
 
-import { AuthContext } from "@/context/auth-context"
+import { supabase } from "@/utils/supabase"
 
-const LoginPage = () => {
+const SignUpPage = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  // When session exists, navigate to the protected home page
 
-  const { signIn } = useContext(AuthContext)
+  const signUp = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+    })
+    if (error) {
+      alert(error.message)
+      return
+    }
+    // On successful signup, redirect to login
+    alert("Check your email to confirm your account!")
+    router.replace("/login")
+  }
 
   return (
     <View
@@ -34,20 +44,17 @@ const LoginPage = () => {
         secureTextEntry
       />
       <Button
-        title="Sign In"
+        title="Sign Up"
         onPress={async () => {
-          await signIn(email, password)
-          // redirect
-          router.replace("/")
+          await signUp(email, password)
         }}
       />
-
       <Button
-        title="Need an account? Sign Up"
-        onPress={() => router.push("/signup")}
+        title="Already have an account? Login"
+        onPress={() => router.push("/login")}
       />
     </View>
   )
 }
 
-export default LoginPage
+export default SignUpPage

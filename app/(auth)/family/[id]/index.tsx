@@ -42,7 +42,7 @@ export default function Home() {
 
         // uplod to supabase storage
         const { error: uploadError } = await supabase.storage
-          .from("family-media")
+          .from("family_media")
           .upload(filePath, decode(fileBase64), {
             contentType: asset.type,
             upsert: false,

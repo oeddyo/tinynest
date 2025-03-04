@@ -39,4 +39,19 @@ const getFamiliesForUser = async (
   return data?.map((membership) => membership.families) || []
 }
 
-export { getFamilyMembers, getFamiliesForUser }
+const createFamily = async (
+  name: string,
+  userId: string
+): Promise<Database["public"]["Tables"]["families"]["Row"]> => {
+  const { data, error } = await supabase.rpc("create_family_with_admin", {
+    p_name: name,
+    p_user_id: userId,
+  })
+
+  if (error) {
+    throw error
+  }
+  return data
+}
+
+export { getFamilyMembers, getFamiliesForUser, createFamily }

@@ -51,7 +51,7 @@ const FeedPage = () => {
         (data || []).map(async (item) => {
           // Get a signed URL for the media item
           const { data: urlData } = await supabase.storage
-            .from("family-media") // Make sure this matches your bucket name
+            .from("family_media") // Make sure this matches your bucket name
             .createSignedUrl(item.storage_path, 3600) // 1 hour expiration
 
           return {

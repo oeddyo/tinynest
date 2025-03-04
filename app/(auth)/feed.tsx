@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import React, { useContext } from "react";
+import { useQuery } from "@tanstack/react-query"
+import React, { useContext } from "react"
 import {
   StyleSheet,
   Text,
@@ -8,19 +8,19 @@ import {
   ActivityIndicator,
   FlatList,
   RefreshControl,
-} from "react-native";
+} from "react-native"
 
-import { AuthContext } from "@/context/auth-context";
-import { supabase } from "@/utils/supabase";
+import { AuthContext } from "@/context/auth-context"
+import { supabase } from "@/utils/supabase"
 
 interface MediaItem {
-  id: string;
-  uri: string;
-  caption: string | null;
+  id: string
+  uri: string
+  caption: string | null
 }
 
 const FeedPage = () => {
-  const { session } = useContext(AuthContext);
+  const { session } = useContext(AuthContext)
   const {
     data: mediaItems,
     isLoading,
@@ -31,18 +31,18 @@ const FeedPage = () => {
     queryKey: ["feedMediaItems", session?.user.id],
     queryFn: async () => {
       if (!session?.user.id) {
-        throw new Error("User not authenticated");
+        throw new Error("User not authenticated")
       }
 
       const { data, error } = await supabase
         .from("media_items")
         .select("*")
         .eq("uploader_id", session.user.id)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
 
       if (error) {
-        console.error(error);
-        throw error;
+        console.error(error)
+        throw error
       }
 
       // Generate signed URLs for each media item
@@ -51,18 +51,18 @@ const FeedPage = () => {
           // Get a signed URL for the media item
           const { data: urlData } = await supabase.storage
             .from("family-media") // Make sure this matches your bucket name
-            .createSignedUrl(item.storage_path, 3600); // 1 hour expiration
+            .createSignedUrl(item.storage_path, 3600) // 1 hour expiration
 
           return {
             ...item,
             uri: urlData?.signedUrl || "",
-          };
+          }
         })
-      );
+      )
 
-      return mediaWithUrls;
+      return mediaWithUrls
     },
-  });
+  })
 
   // Render a media item
   const renderMediaItem = ({ item }: { item: MediaItem }) => {
@@ -75,8 +75,8 @@ const FeedPage = () => {
         />
         {item.caption && <Text style={styles.caption}>{item.caption}</Text>}
       </View>
-    );
-  };
+    )
+  }
 
   if (isLoading) {
     return (
@@ -84,7 +84,7 @@ const FeedPage = () => {
         <ActivityIndicator size="large" color="#0000ff" />
         <Text>Loading media...</Text>
       </View>
-    );
+    )
   }
 
   if (isError) {
@@ -95,7 +95,7 @@ const FeedPage = () => {
           {error instanceof Error ? error.message : "Unknown error"}
         </Text>
       </View>
-    );
+    )
   }
 
   if (!mediaItems || mediaItems.length === 0) {
@@ -103,7 +103,7 @@ const FeedPage = () => {
       <View style={styles.centered}>
         <Text>No media-items found. Upload some photos to see them here!</Text>
       </View>
-    );
+    )
   }
 
   return (
@@ -119,10 +119,10 @@ const FeedPage = () => {
         }
       />
     </View>
-  );
-};
+  )
+}
 
-export default FeedPage;
+export default FeedPage
 
 const styles = StyleSheet.create({
   container: {
@@ -175,4 +175,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 10,
   },
-});
+})

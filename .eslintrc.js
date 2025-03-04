@@ -6,11 +6,11 @@ module.exports = {
     "prettier/prettier": [
       "error",
       {
-        trailingComma: "none",
+        semi: false,
       },
     ],
     "no-console": "warn",
     "no-unused-vars": "warn",
   },
   ignorePatterns: ["/dist/*"],
-};
+}

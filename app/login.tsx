@@ -1,16 +1,16 @@
 // app/index.tsx
-import { router } from "expo-router";
-import { useContext, useState } from "react";
-import { Text, View, Button, TextInput } from "react-native";
+import { router } from "expo-router"
+import { useContext, useState } from "react"
+import { Text, View, Button, TextInput } from "react-native"
 
-import { AuthContext } from "@/context/auth-context";
+import { AuthContext } from "@/context/auth-context"
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
   // When session exists, navigate to the protected home page
 
-  const { signIn } = useContext(AuthContext);
+  const { signIn } = useContext(AuthContext)
 
   return (
     <View
@@ -36,13 +36,13 @@ const LoginPage = () => {
       <Button
         title="Sign In"
         onPress={async () => {
-          await signIn(email, password);
+          await signIn(email, password)
           // redirect
-          router.replace("/");
+          router.replace("/")
         }}
       />
     </View>
-  );
-};
+  )
+}
 
-export default LoginPage;
+export default LoginPage

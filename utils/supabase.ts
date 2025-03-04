@@ -12,8 +12,8 @@ export const supabase = createClient<Database>(supabaseUrl!, supabaseKey!, {
     storage: AsyncStorage,
     autoRefreshToken: true,
     persistSession: true,
-    detectSessionInUrl: false
-  }
+    detectSessionInUrl: false,
+  },
 });
 
 // Tells Supabase Auth to continuously refresh the session automatically

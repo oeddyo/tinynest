@@ -16,7 +16,7 @@ const LoginPage = () => {
       style={{
         flex: 1,
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
       }}
     >
       <Text>Sign Up</Text>
@@ -34,7 +34,7 @@ const LoginPage = () => {
       />
       <Button
         title="Sign In"
-        onPress={async() => {
+        onPress={async () => {
           await signIn(email, password);
           // redirect
           router.replace("/");

@@ -2,20 +2,20 @@ import { StyleSheet, Text, View } from "react-native";
 import React, { useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AuthContext } from "@/context/auth-context";
-import { getFamilyMembers } from "@/api/api";
+import { getFamiliesForUser, getFamilyMembers } from "@/api/api";
 
 const FamilyPage = () => {
   const { session } = useContext(AuthContext);
   const { data } = useQuery({
-    queryKey: ["family-members", session?.user.id],
-    queryFn: getFamilyMembers,
+    queryKey: ["families", session?.user.id],
+    queryFn: () => getFamiliesForUser(session?.user.id as string),
   });
 
   return (
     <View>
       <Text>Family Member Ids</Text>
-      {data?.map((member) => {
-        return <Text>{member.id}</Text>;
+      {data?.map((family) => {
+        return <Text>{family.name}</Text>;
       })}
     </View>
   );

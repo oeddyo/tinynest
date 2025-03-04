@@ -11,3 +11,5 @@ const getFamilyMembers = async (): Promise<
   }
   return data;
 };
+
+export { getFamilyMembers };
